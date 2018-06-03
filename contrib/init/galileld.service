@@ -1,0 +1,26 @@
+[Unit]
+Description=EXOTIC's distributed currency daemon
+After=network.target
+
+[Service]
+User=exotic
+Group=exotic
+
+Type=forking
+PIDFile=/var/lib/exoticd/exoticd.pid
+
+ExecStart=/usr/bin/exoticd -daemon -pid=/var/lib/exoticd/exoticd.pid \
+          -conf=/etc/exotic/exotic.conf -datadir=/var/lib/exoticd
+
+ExecStop=-/usr/bin/exotic-cli -conf=/etc/exotic/exotic.conf \
+         -datadir=/var/lib/exoticd stop
+
+Restart=always
+PrivateTmp=true
+TimeoutStopSec=60s
+TimeoutStartSec=2s
+StartLimitInterval=120s
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target
